@@ -1,6 +1,12 @@
 import numpy as np
+import sys
 
-with open('./node/finalizedPrices.txt','r') as fp:
+if sys.platform == 'linux':
+    pricePath = '/home/ubuntu/github/AugurScore/node/finalizedPrices.txt'
+else:
+    pricePath = './node/finalizedPrices.txt'
+
+with open(pricePath,'r') as fp:
     finalizedMarkets = eval(fp.read())
     
 categoricalMarkets = [i for i in finalizedMarkets if i[0]['numOutcomes'] > 2]
