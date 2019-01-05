@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, request
 from app import app
 from app.forms import Form
 
-from app import augurAccuracyFunctions as augurAccuracyFunctions
+from app import augurAccuracyFunctions as aaf
 
 @app.route('/')
 @app.route('/index',methods=['GET', 'POST'])
@@ -10,14 +10,26 @@ def index():
     form = Form()
     if form.validate_on_submit():
         result = request.form
-        marketSet = augurAccuracyFunctions.binaryMarkets
-        secondsAhead = int(result['secondsAhead'])
-        kernelFunction = eval('augurAccuracyFunctions.' + result['kernelFunction'])
-        kernelWidth = int(result['kernelWidth'])
-        scoreFunction = eval('augurAccuracyFunctions.' + result['scoreFunction'])
-        score = augurAccuracyFunctions.scoreMarketsBinary(marketSet, secondsAhead, kernelFunction, kernelWidth, scoreFunction)
-        return render_template('index.html', title='AugurScore', form=form, score=str(score))
+        marketSet = aaf.binaryMarkets
+        secondsAhead = float(result['daysAhead']) * 60. * 60. * 24.
+        kernelFunction = eval('aaf.' + result['kernelFunction'])
+        kernelWidthInSeconds = float(result['kernelWidth']) * 60. * 60. * 24.
+        
+        scores = {}
+        scores['logScore'], weightedVolume, allTrades = aaf.scoreMarketsBinary(marketSet, secondsAhead, kernelFunction, kernelWidthInSeconds, aaf.logScore)
+        scores['brierScore'], weightedVolume, allTrades = aaf.scoreMarketsBinary(marketSet, secondsAhead, kernelFunction, kernelWidthInSeconds, aaf.brierScore)
+        scores['sphericalScore'], weightedVolume, allTrades = aaf.scoreMarketsBinary(marketSet, secondsAhead, kernelFunction, kernelWidthInSeconds, aaf.sphericalScore)
+        print(allTrades)
+        return render_template('index.html', 
+                               title='AugurScore', 
+                               form=form, 
+                               scores=scores,
+                               weightedVolume=weightedVolume,
+                               imagePath='/static/test.jpg')
     else:
         print(form.errors)
         return render_template('index.html', title='AugurScore', form=form)
-
+    
+# probabilstic confusion matrix
+# select subset of wagers
+# more kernels

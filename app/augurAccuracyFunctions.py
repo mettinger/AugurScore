@@ -7,7 +7,7 @@ categoricalMarkets = [i for i in finalizedMarkets if i[0]['numOutcomes'] > 2]
 binaryMarkets = [i for i in finalizedMarkets if i[0]['marketType'] == 'yesNo']
 
 def gaussianKernel(x, y, sigma):
-    return np.exp(-(x-y)**2/(2 * (sigma**2)))/(np.sqrt(2*np.pi) * sigma)
+    return np.exp(-(x-y)**2/(2 * (sigma**2))) #/(np.sqrt(2*np.pi) * sigma) (we want f(0) = 1)
 
 def uniformKernel(x, y, halfWidth):
     if abs(x - y) <= halfWidth:
@@ -25,7 +25,7 @@ def brierScore(probVector, outcomeIndex):
         return (0 - probVector[0]**2) + (1 - probVector[1]**2)
     
 def sphericalScore(probVector, outcomeIndex):
-    return probVector[outcomeIndex]/np.norm(probVector)
+    return probVector[outcomeIndex]/np.linalg.norm(probVector)
 
 
 def scoreMarketsBinary(admittedMarkets, 
@@ -38,6 +38,8 @@ def scoreMarketsBinary(admittedMarkets,
     
     weightVector = np.array([0])
     scoreVector = np.array([0])
+    kernelWeightedVolume = 0
+    allTrades = []
     for thisMarket in admittedMarkets:
         marketData = thisMarket[0]
         if len(list(thisMarket[1].keys())) < minTrades:
@@ -63,6 +65,9 @@ def scoreMarketsBinary(admittedMarkets,
             
             timeWeight = kernelFunction(centerTime, tradeTime, kernelWidth)
             weight = timeWeight * amount
+            
+            kernelWeightedVolume += timeWeight * amount
+            allTrades.append((price, timeWeight * amount, flipFlag))
             if weight >= minWeight:
                 weightVector = np.append(weightVector, weight)
                 if consensusIndex == 0:
@@ -70,7 +75,7 @@ def scoreMarketsBinary(admittedMarkets,
                 else:
                     scoreVector = np.append(scoreVector,[scoreFunction([1-price, price],1)],0)
             
-    return np.average(scoreVector[1:],axis = 0,weights=weightVector[1:])
+    return (np.average(scoreVector[1:],axis = 0,weights=weightVector[1:]), kernelWeightedVolume, allTrades)
 
 
 

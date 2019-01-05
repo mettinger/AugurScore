@@ -27,17 +27,19 @@
                 {{ form.kernelWidth(size=32) }}
             </p>
             <p>
-                {{ form.secondsAhead.label }}<br>
-                {{ form.secondsAhead(size=32) }}
-            </p>
-            <p>
-                {{ form.scoreFunction.label }}<br>
-                {{ form.scoreFunction(size=3) }}
+                {{ form.daysAhead.label }}<br>
+                {{ form.daysAhead(size=32) }}
             </p>
             <p>{{ form.submit() }}</p>
         </form>
-        {% if score %}
-        <h1>score: {{ score }}</h1>
+        {% if scores %}
+        <h1>Kernel-weighted volume: {{ weightedVolume }}</h1>
+        <h1>Log score: {{ scores['logScore'] }}</h1>
+        <h1>Brier score: {{ scores['brierScore'] }}</h1>
+        <h1>Spherical score: {{ scores['sphericalScore'] }}</h1>
+        {% endif %}
+        {% if imagePath %}
+        <img src="{{ imagePath }}" alt="probabilistic confusion matrix">
         {% endif %}
     </body>
 </html>
