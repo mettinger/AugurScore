@@ -1,9 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.validators import DataRequired
 
-class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember Me')
-    submit = SubmitField('Sign In')
+class Form(FlaskForm):
+    kernelFunction = SelectField('Kernel Functions', choices = [('gaussianKernel', 'Gaussian'), ('uniformKernel', 'Uniform')])
+    kernelWidth = StringField('Kernel Width', validators=[DataRequired()])
+    secondsAhead = StringField('Seconds Ahead', validators=[DataRequired()])
+    scoreFunction = SelectField('Score Function', choices = [('brierScore', 'Brier'), ('logScore', 'Log'),('sphericalScore','Spherical')])
+    submit = SubmitField('Submit')
+    
+#class MarketSetForm:
