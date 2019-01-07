@@ -134,7 +134,12 @@ def calibrationPlot(admittedMarkets,
     plt.xlabel('Predicted Probability')
     plt.ylabel('Empirical Probability')
     fileName = 'calibrationPlot%s.jpg' % str(np.random.randint(0,100000))
-    plt.savefig('./app/static/' + fileName)
+    
+    if sys.platform == 'linux':
+        plt.savefig('/home/ubuntu/github/AugurScore/app/static/' + fileName)
+    else:
+        plt.savefig('./app/static/' + fileName)
+        
     return "static/" + fileName
 
 
