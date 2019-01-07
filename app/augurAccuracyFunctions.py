@@ -20,7 +20,13 @@ def uniformKernel(x, y, halfWidth):
         return 1.
     else:
         return 0.
-
+    
+def triangularKernel(x, y, halfWidth):
+    if abs(x - y) <= halfWidth:
+        return 1. - (abs(x - y)/float(halfWidth))
+    else:
+        return 0.
+    
 def logScore(probVector, outcomeIndex):
     return np.log(probVector[outcomeIndex])
 

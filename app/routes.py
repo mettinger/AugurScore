@@ -31,7 +31,8 @@ def index():
         print(form.errors)
         return render_template('index.html', title='AugurScore', form=form)
     
-# probabilstic confusion matrix
+#   TODO:
+# calibration plot
 # select subset of wagers
 # more kernels
 # make it pretty
