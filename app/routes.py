@@ -1,6 +1,7 @@
 from flask import render_template, flash, redirect, request
 from app import app
 from app.forms import Form
+import sys
 
 from app import augurAccuracyFunctions as aaf
 import os
@@ -9,7 +10,11 @@ import os
 @app.route('/index',methods=['GET', 'POST'])
 def index():
     
-    thisDir = './app/static/'
+    if sys.platform == 'linux':
+        thisDir = '/home/ubuntu/github/AugurScore/app/static/'
+    else:
+        thisDir = './app/static/'
+        
     files = os.listdir(thisDir)
     for file in files:
         if file.endswith(".jpg"):
