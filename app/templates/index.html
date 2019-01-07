@@ -11,14 +11,16 @@
            <li>We can use data from Augur to explore the quality of market-based probability estimates over a diverse set of events, including sporting events, political events, etc.</li>
            <li>In statistics and machine learning "scoring rules" are used to measure the accuracy of probability predictions.  So scoring rules are similar to loss functions in machine learning.  On this site we evaluate several scoring rules on Augur probability predictions.  For a brief overview of scoring rules, see the <a href="https://en.wikipedia.org/wiki/Scoring_rule">Wikipedia article.</a></li>
            <li>Probabilities for outcomes change over time.  For example, predictions seven days in advance are presumably less accurate than predictions one day in advance.  We allow the user to specify the timepoint of interest.</li>
-           <li>All probabilities (i.e. trade prices) are temporally weighted by a kernel function centered at the timepoint of interest.  The user can specify the form of the kernel function and the kernel width.</li>
+           <li>In order to estimate a probability at a given timepoint we use a weighted average of "nearby" trade prices.  All probabilities (i.e. trade prices) are temporally weighted by a kernel function centered at the timepoint of interest.  The user can specify the form of the kernel function and the kernel width.</li>
            <li>All probabilities are also weighted by trade volume (in addition to the temporal weight).</li>
            <li>At the moment, AugurScore only supports analysis on Yes/No markets.</li>
            <li>Technical details:  We use the Augur API (augur.js) to pull the data from an Augur Node.  We use Python to process the data.  This website is written in Python with Flask.</li>
            <li>TODO:
                <ul>
-                   <li>Improve interface to allow selecting a subset of events to analyze (for example, only political events).</li>
-                   <li>More kernel functions.</li>
+                   <li>Improve interface to allow selecting a subset of events to analyze (for example, only political events or a designated set of markets).</li>
+                   <li>Add more kernel functions.</li>
+                   <li>Instead of only using trades as probability estimates, would it be better to use the midpoint of buy/sell open orders?</li>
+                   <li>Become a respectable web developer and make this site pretty.</li>
                </ul>
            </li>
       </ul>
@@ -36,6 +38,14 @@
                 {{ form.daysAhead.label }}<br>
                 {{ form.daysAhead(size=32) }}
             </p>
+            <p>
+                {{ form.kernelFunctionCalibrated.label }}<br>
+                {{ form.kernelFunctionCalibrated(size=3) }}
+            </p>
+            <p>
+                {{ form.kernelWidthCalibrated.label }}<br>
+                {{ form.kernelWidthCalibrated(size=32) }}
+            </p>
             <p>{{ form.submit() }}</p>
         </form>
         {% if scores %}
@@ -44,8 +54,10 @@
         <h1>Brier score: {{ scores['brierScore'] }}</h1>
         <h1>Spherical score: {{ scores['sphericalScore'] }}</h1>
         {% endif %}
-        {% if imagePath %}
-        <img src="{{ imagePath }}" alt="probabilistic confusion matrix">
+    
+        {% if filePath %}
+        <img src="{{ filePath }}" alt="probabilistic confusion matrix">
         {% endif %}
+        
     </body>
 </html>

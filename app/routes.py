@@ -15,24 +15,29 @@ def index():
         kernelFunction = eval('aaf.' + result['kernelFunction'])
         kernelWidthInSeconds = float(result['kernelWidth']) * 60. * 60. * 24.
         
+        kernelFunctionCalibrated = eval('aaf.' + result['kernelFunctionCalibrated'])
+        print(result['kernelWidthCalibrated'])
+        kernelWidthCalibrated = float(result['kernelWidthCalibrated'])
+        
         scores = {}
         scores['logScore'], weightedVolume, allTrades = aaf.scoreMarketsBinary(marketSet, secondsAhead, kernelFunction, kernelWidthInSeconds, aaf.logScore)
         scores['brierScore'], weightedVolume, allTrades = aaf.scoreMarketsBinary(marketSet, secondsAhead, kernelFunction, kernelWidthInSeconds, aaf.brierScore)
         scores['sphericalScore'], weightedVolume, allTrades = aaf.scoreMarketsBinary(marketSet, secondsAhead, kernelFunction, kernelWidthInSeconds, aaf.sphericalScore)
-        print(allTrades)
-        imagePath = aaf.confusionMatrixMake(allTrades)
+        
+        print(kernelFunctionCalibrated)
+        print(kernelWidthCalibrated)
+        
+        filePath = aaf.calibrationPlot(marketSet,
+                            kernelFunctionCalibrated, 
+                            kernelWidthCalibrated)
+        
         return render_template('index.html', 
                                title='AugurScore', 
                                form=form, 
                                scores=scores,
                                weightedVolume=weightedVolume,
-                               imagePath=imagePath)
+                               filePath=filePath)
     else:
         print(form.errors)
         return render_template('index.html', title='AugurScore', form=form)
     
-#   TODO:
-# calibration plot
-# select subset of wagers
-# more kernels
-# make it pretty

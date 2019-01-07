@@ -1,5 +1,11 @@
 import numpy as np
 import sys
+import matplotlib
+matplotlib.use('Agg')
+
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+
 
 if sys.platform == 'linux':
     pricePath = '/home/ubuntu/github/AugurScore/node/finalizedPrices.txt'
@@ -89,7 +95,48 @@ def scoreMarketsBinary(admittedMarkets,
             
     return (np.average(scoreVector[1:],axis = 0,weights=weightVector[1:]), kernelWeightedVolume, allTrades)
 
-def confusionMatrixMake(allTrades):
+def calibrationPlot(admittedMarkets, 
+                    kernelFunctionCalibrated, 
+                    kernelWidthCalibrated, 
+                    plotPoints = np.linspace(0,1,101), 
+                    minTrades = 1.0, 
+                    minWeight = 0.):
     
-    return 'static/test.jpg'
+    correctWeight = [0 for i in range(len(plotPoints))]
+    totalWeight = [0 for i in range(len(plotPoints))]
+    
+    for thisMarket in admittedMarkets:
+        marketData = thisMarket[0]
+        if len(list(thisMarket[1].keys())) < minTrades:
+            continue
+        else:
+            pricedOutcome = list(thisMarket[1].keys())[0]
+        priceData = thisMarket[1][pricedOutcome]
+        marketId = marketData['id']
+        consensusIndex = np.argmax(marketData['consensus']['payout'])
+        pricedOutcomeFlag = int((int(pricedOutcome) == consensusIndex))
+        
+        for i,thisTrade in enumerate(priceData):
+                
+            price = float(thisTrade['price'])
+            amount = float(thisTrade['amount'])
+            for j in range(len(plotPoints)):
+                priceWeight = kernelFunctionCalibrated(plotPoints[j], price, kernelWidthCalibrated)
+                weight = priceWeight * amount
+
+                if weight >= minWeight:
+                    correctWeight[j] += weight * pricedOutcomeFlag
+                    totalWeight[j] += weight
+    y = [correctWeight[j]/totalWeight[j] for j in range(len(plotPoints))]
+    
+    plt.plot(plotPoints, y)
+    plt.title('Calibration Plot')
+    plt.xlabel('Predicted Probability')
+    plt.ylabel('Empirical Probability')
+    fileName = 'calibrationPlot%s.jpg' % str(np.random.randint(0,100000))
+    plt.savefig('./app/static/' + fileName)
+    return "static/" + fileName
+
+
+
 
