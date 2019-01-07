@@ -3,10 +3,18 @@ from app import app
 from app.forms import Form
 
 from app import augurAccuracyFunctions as aaf
+import os
 
 @app.route('/')
 @app.route('/index',methods=['GET', 'POST'])
 def index():
+    
+    thisDir = './app/static/'
+    files = os.listdir(thisDir)
+    for file in files:
+        if file.endswith(".jpg"):
+            os.remove(thisDir + file)
+       
     form = Form()
     if form.validate_on_submit():
         result = request.form
