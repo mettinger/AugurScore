@@ -20,12 +20,13 @@ def index():
         scores['brierScore'], weightedVolume, allTrades = aaf.scoreMarketsBinary(marketSet, secondsAhead, kernelFunction, kernelWidthInSeconds, aaf.brierScore)
         scores['sphericalScore'], weightedVolume, allTrades = aaf.scoreMarketsBinary(marketSet, secondsAhead, kernelFunction, kernelWidthInSeconds, aaf.sphericalScore)
         print(allTrades)
+        imagePath = aaf.confusionMatrixMake(allTrades)
         return render_template('index.html', 
                                title='AugurScore', 
                                form=form, 
                                scores=scores,
                                weightedVolume=weightedVolume,
-                               imagePath='/static/test.jpg')
+                               imagePath=imagePath)
     else:
         print(form.errors)
         return render_template('index.html', title='AugurScore', form=form)
@@ -33,3 +34,4 @@ def index():
 # probabilstic confusion matrix
 # select subset of wagers
 # more kernels
+# make it pretty

@@ -83,19 +83,7 @@ def scoreMarketsBinary(admittedMarkets,
             
     return (np.average(scoreVector[1:],axis = 0,weights=weightVector[1:]), kernelWeightedVolume, allTrades)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def confusionMatrixMake(allTrades):
+    
+    return 'static/test.jpg'
 
