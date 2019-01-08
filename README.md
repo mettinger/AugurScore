@@ -1,3 +1,4 @@
 # AugurScore
-Website for assessing Augur probability estimates
-Go to: [augurscore.org](http://augurscore.org)
+Website for assessing Augur probability estimates.
+
+Please visit [augurscore.org](http://augurscore.org).
