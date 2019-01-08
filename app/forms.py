@@ -7,14 +7,14 @@ class Form(FlaskForm):
                                  choices = [('gaussianKernel', 'Gaussian'),
                                             ('uniformKernel', 'Uniform'),
                                             ('triangularKernel','Triangular')])
-    kernelWidth = StringField('Temporal Kernel Width in Days (float value)', 
+    kernelWidth = StringField('Temporal Kernel Width in Days (float value, e.g. 1)', 
                               validators=[DataRequired()])
-    daysAhead = StringField('Days Ahead (float value)', validators=[DataRequired()])
+    daysAhead = StringField('Days Ahead (float value, e.g. 7)', validators=[DataRequired()])
     kernelFunctionCalibrated = SelectField('Probability Kernel Functions For Calibration', 
                                            choices = [('gaussianKernel', 'Gaussian'),
                                                       ('uniformKernel', 'Uniform'),
                                                       ('triangularKernel','Triangular')])
-    kernelWidthCalibrated = StringField('Probability Kernel Width (float value)', 
+    kernelWidthCalibrated = StringField('Probability Kernel Width (float value, e.g. .03)', 
                                         validators=[DataRequired()])
     submit = SubmitField('Submit')
     
