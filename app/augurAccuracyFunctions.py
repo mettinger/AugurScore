@@ -129,6 +129,7 @@ def calibrationPlot(admittedMarkets,
                     totalWeight[j] += weight
     y = [correctWeight[j]/totalWeight[j] for j in range(len(plotPoints))]
     
+    plt.figure()
     plt.plot(plotPoints, y)
     plt.title('Calibration Plot')
     plt.xlabel('Predicted Probability')
@@ -140,6 +141,8 @@ def calibrationPlot(admittedMarkets,
     else:
         plt.savefig('./app/static/' + fileName)
         
+    plt.close()
+    
     return "static/" + fileName
 
 
